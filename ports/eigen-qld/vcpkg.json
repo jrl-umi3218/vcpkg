@@ -6,7 +6,7 @@
   "dependencies": [
     "eigen3",
     {
-      "name": "vcpkg-fortran",
+      "name": "vcpkg-gfortran",
       "platform": "windows"
     }
   ]
