@@ -6,10 +6,11 @@ on:
       - '**'
 
 jobs:
-  build-windows:
+  build-packages:
     env:
         VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, macos-latest]
     runs-on: ${{ matrix.os }}
@@ -24,6 +25,7 @@ jobs:
       if: "!startsWith(runner.os, 'Windows')"
       run: |
         ./bootstrap-vcpkg.sh
+        echo "::set-env name=JRL_MONO::mono"
     - name: Setup NuGet Credentials
       shell: bash
       run: >
