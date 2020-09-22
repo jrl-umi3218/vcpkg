@@ -26,10 +26,4 @@ file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 
-make_directory(${CURRENT_PACKAGES_DIR}/tools/rbdyn)
-file(
-    RENAME
-    ${CURRENT_PACKAGES_DIR}/bin/urdf_yaml_converter
-    ${CURRENT_PACKAGES_DIR}/tools/rbdyn/urdf_yaml_converter)
-vcpkg_copy_tool_dependencies(${CURRENT_PACKAGES_DIR}/tools/rbdyn)
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
+vcpkg_copy_tools(TOOL_NAMES urdf_yaml_converter AUTO_CLEAN)
