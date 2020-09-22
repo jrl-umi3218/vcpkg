@@ -19,6 +19,7 @@ jobs:
       if: startsWith(runner.os, 'Windows')
       run: |
         .\bootstrap-vcpkg.bat
+        echo "::set-env name=VCPKG_DEFAULT_TRIPLET::x64-windows"
     - name: Setup NuGet Credentials
       shell: bash
       run: >
