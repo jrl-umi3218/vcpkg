@@ -1,0 +1,45 @@
+name: Build jrl-umi3218 ports
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build-windows:
+    strategy:
+      matrix:
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Bootstrap (Windows)
+      if: startsWith(runner.os, 'Windows')
+      run: |
+        .\bootstrap-vcpkg.bat
+    - name: Install SpaceVecAlg
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::spacevecalg"
+        ./vcpkg install spacevecalg
+    - name: Install RBDyn
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::rbdyn"
+        ./vcpkg install rbdyn
+    - name: Install eigen-qld
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::eigen-qld"
+        ./vcpkg install eigen-qld
+    - name: Show logs
+      if: failure()
+      shell: bash
+      run: |
+        for f in `ls buildtrees/${JRL_PORT}/*.log`
+        do
+          echo "=========="
+          echo "$f"
+          echo "=========="
+          cat $f
+        done
