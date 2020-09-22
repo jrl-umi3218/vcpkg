@@ -11,15 +11,19 @@ jobs:
         VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite'
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows-latest, ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
-    - name: Bootstrap (Windows)
+    - name: Bootstrap vcpkg (Windows)
       if: startsWith(runner.os, 'Windows')
       run: |
         .\bootstrap-vcpkg.bat
         echo "::set-env name=VCPKG_DEFAULT_TRIPLET::x64-windows"
+    - name: "Bootstrap vcpkg (Linux, macOS)"
+      if: "!startsWith(runner.os, 'Windows')"
+      run: |
+        ./bootstrap-vcpkg.sh
     - name: Setup NuGet Credentials
       shell: bash
       run: >
