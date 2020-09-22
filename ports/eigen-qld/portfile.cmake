@@ -19,6 +19,7 @@ vcpkg_configure_cmake(
     OPTIONS
       -DBUILD_TESTING=OFF
       -DPYTHON_BINDING=OFF
+      -DUSE_FORTRAN_SUBDIRECTORY=OFF
       ${FORTRAN_CMAKE}
 )
 
