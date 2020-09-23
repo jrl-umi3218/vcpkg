@@ -57,3 +57,7 @@ jobs:
       shell: bash
       run: |
         ./vcpkg install --debug sch-core
+    - name: Install tasks
+      shell: bash
+      run: |
+        ./vcpkg install --debug tasks
