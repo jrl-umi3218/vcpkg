@@ -21,15 +21,18 @@ jobs:
       run: |
         .\bootstrap-vcpkg.bat
         echo "::set-env name=VCPKG_DEFAULT_TRIPLET::x64-windows"
-    - name: "Bootstrap vcpkg (Linux, macOS)"
-      if: "!startsWith(runner.os, 'Windows')"
+    - name: Bootstrap vcpkg (Linux)
+      if: startsWith(runner.os, 'Linux')
       run: |
+        export CXX=g++ # Enforce default g++ selection
         ./bootstrap-vcpkg.sh
         echo "::set-env name=JRL_MONO::mono"
-    - name: Install gfortran (macOS)
+    - name: Bootstrap vcpkg (macOS)
       if: startsWith(runner.os, 'macOS')
       run: |
         brew cask install gfortran
+        ./bootstrap-vcpkg.sh -allowAppleClang
+        echo "::set-env name=JRL_MONO::mono"
     - name: Setup NuGet Credentials
       shell: bash
       run: >
