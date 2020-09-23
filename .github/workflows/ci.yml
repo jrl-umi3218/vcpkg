@@ -44,20 +44,36 @@ jobs:
     - name: Install SpaceVecAlg
       shell: bash
       run: |
+        echo "::set-env name=JRL_PORT::spacevecalg"
         ./vcpkg install --debug spacevecalg
     - name: Install RBDyn
       shell: bash
       run: |
+        echo "::set-env name=JRL_PORT::rbdyn"
         ./vcpkg install --debug rbdyn
     - name: Install eigen-qld
       shell: bash
       run: |
+        echo "::set-env name=JRL_PORT::eigen-qld"
         ./vcpkg install --debug eigen-qld
     - name: Install sch-core
       shell: bash
       run: |
+        echo "::set-env name=JRL_PORT::sch-core"
         ./vcpkg install --debug sch-core
     - name: Install tasks
       shell: bash
       run: |
+        echo "::set-env name=JRL_PORT::tasks"
         ./vcpkg install --debug tasks
+    - name: Show logs
+      if: failure()
+      shell: bash
+      run: |
+        for f in `ls buildtrees/${JRL_PORT}/*.log`
+        do
+          echo "=========="
+          echo "$f"
+          echo "=========="
+          cat $f
+        done
