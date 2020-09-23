@@ -21,6 +21,7 @@ vcpkg_configure_cmake(
 vcpkg_install_cmake()
 
 vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/hpp-spline)
+vcpkg_fixup_pkgconfig()
 
 file(WRITE ${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright "")
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
