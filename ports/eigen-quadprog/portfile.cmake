@@ -21,6 +21,8 @@ vcpkg_extract_source_archive_ex(
     REF 1.0.1
 )
 
+vcpkg_add_to_path("${MINGW_BIN}")
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
