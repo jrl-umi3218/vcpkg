@@ -81,6 +81,11 @@ jobs:
       run: |
         echo "::set-env name=JRL_PORT::mc-rtc-data"
         ./vcpkg install --debug mc-rtc-data
+    - name: Install mc-rbdyn-urdf
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::mc-rbdyn-urdf"
+        ./vcpkg install --debug mc-rbdyn-urdf
     - name: Show logs
       if: failure()
       shell: bash
