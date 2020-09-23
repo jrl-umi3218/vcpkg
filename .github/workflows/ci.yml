@@ -76,6 +76,11 @@ jobs:
       run: |
         echo "::set-env name=JRL_PORT::eigen-quadprog"
         ./vcpkg install --debug eigen-quadprog
+    - name: Install mc-rtc-data
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::mc-rtc-data"
+        ./vcpkg install --debug mc-rtc-data
     - name: Show logs
       if: failure()
       shell: bash
