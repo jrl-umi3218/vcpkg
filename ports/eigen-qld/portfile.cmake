@@ -1,5 +1,13 @@
-include(vcpkg_find_fortran)
-vcpkg_find_fortran(FORTRAN_CMAKE)
+include(vcpkg_find_fortran_for_subdirectory)
+
+vcpkg_find_fortran_for_subdirectory(FORTRAN_CMAKE)
+if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
+    set(MINGW_PATH mingw32)
+else()
+    set(MINGW_PATH mingw64)
+endif()
+set(MINGW_BIN "${vcpkg_find_fortran_for_subdirectory_MSYS_ROOT}/${MINGW_PATH}/bin")
+set(MINGW_GFORTRAN "${MINGW_BIN}/gfortran.exe")
 
 vcpkg_download_distfile(ARCHIVE
     URLS "https://github.com/jrl-umi3218/eigen-qld/releases/download/v1.2.1/eigen-qld-v1.2.1.tar.gz"
@@ -13,14 +21,13 @@ vcpkg_extract_source_archive_ex(
     REF 1.2.1
 )
 
+vcpkg_add_to_path("${MINGW_BIN}")
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
-    PREFER_NINJA
     OPTIONS
       -DBUILD_TESTING=OFF
       -DPYTHON_BINDING=OFF
-      -DUSE_FORTRAN_SUBDIRECTORY=OFF
-      ${FORTRAN_CMAKE}
 )
 
 vcpkg_install_cmake()
