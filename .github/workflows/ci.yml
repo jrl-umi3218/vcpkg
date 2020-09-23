@@ -12,10 +12,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, macos-latest]
+        os: [windows-latest, ubuntu-18.04, ubuntu-20.04, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
+    - name: Remove default installation
+      shell: bash
+      run: |
+        rm -rf "$VCPKG_INSTALLATION_ROOT"
     - name: Bootstrap vcpkg (Windows)
       if: startsWith(runner.os, 'Windows')
       run: |
