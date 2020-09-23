@@ -71,6 +71,11 @@ jobs:
       run: |
         echo "::set-env name=JRL_PORT::hpp-spline"
         ./vcpkg install --debug hpp-spline
+    - name: Install eigen-quadprog
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::eigen-quadprog"
+        ./vcpkg install --debug eigen-quadprog
     - name: Show logs
       if: failure()
       shell: bash
