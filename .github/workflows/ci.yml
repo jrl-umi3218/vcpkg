@@ -41,17 +41,17 @@ jobs:
       shell: bash
       run: |
         echo "::set-env name=JRL_PORT::spacevecalg"
-        ./vcpkg install spacevecalg
+        ./vcpkg install --debug spacevecalg
     - name: Install RBDyn
       shell: bash
       run: |
         echo "::set-env name=JRL_PORT::rbdyn"
-        ./vcpkg install rbdyn
+        ./vcpkg install --debug rbdyn
     - name: Install eigen-qld
       shell: bash
       run: |
         echo "::set-env name=JRL_PORT::eigen-qld"
-        ./vcpkg install eigen-qld
+        ./vcpkg install --debug eigen-qld
     - name: Show logs
       if: failure()
       shell: bash
