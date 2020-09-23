@@ -66,6 +66,11 @@ jobs:
       run: |
         echo "::set-env name=JRL_PORT::tasks"
         ./vcpkg install --debug tasks
+    - name: Install hpp-spline
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::hpp-spline"
+        ./vcpkg install --debug hpp-spline
     - name: Show logs
       if: failure()
       shell: bash
