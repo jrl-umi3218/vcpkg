@@ -19,7 +19,7 @@ jobs:
     - name: Remove default installation
       shell: bash
       run: |
-        rm -rf "$VCPKG_INSTALLATION_ROOT"
+        rm -rf "$VCPKG_INSTALLATION_ROOT" || sudo rm -rf "$VCPKG_INSTALLATION_ROOT"
     - name: Bootstrap vcpkg (Windows)
       if: startsWith(runner.os, 'Windows')
       run: |
