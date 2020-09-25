@@ -59,5 +59,3 @@ vcpkg_copy_tools(
     ${MC_RTC_TOOLS}
   AUTO_CLEAN
 )
-
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/bin)
