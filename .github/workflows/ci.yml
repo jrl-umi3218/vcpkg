@@ -86,6 +86,11 @@ jobs:
       run: |
         echo "::set-env name=JRL_PORT::mc-rbdyn-urdf"
         ./vcpkg install --debug mc-rbdyn-urdf
+    - name: Install boost-test
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::boost-test"
+        ./vcpkg install --debug boost-test
     - name: Install mc-rtc
       shell: bash
       run: |
