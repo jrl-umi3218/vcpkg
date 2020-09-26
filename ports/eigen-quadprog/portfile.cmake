@@ -19,6 +19,8 @@ vcpkg_extract_source_archive_ex(
     OUT_SOURCE_PATH SOURCE_PATH
     ARCHIVE ${ARCHIVE}
     REF 1.0.1
+    PATCHES
+      fix-quadprog_fortran-import.patch
 )
 
 vcpkg_add_to_path("${MINGW_BIN}")
