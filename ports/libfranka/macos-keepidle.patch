@@ -1,0 +1,15 @@
+diff --git a/src/network.cpp b/src/network.cpp
+index 8df6939..7a4cbf7 100644
+--- a/src/network.cpp
++++ b/src/network.cpp
+@@ -5,6 +5,10 @@
+ #include <memory>
+ #include <sstream>
+ 
++#if !defined(TCP_KEEPIDLE) && defined(TCP_KEEPALIVE)
++#define TCP_KEEPIDLE TCP_KEEPALIVE
++#endif
++
+ using namespace std::string_literals;  // NOLINT(google-build-using-namespace)
+ 
+ namespace franka {

@@ -8,6 +8,8 @@ vcpkg_extract_source_archive_ex(
     OUT_SOURCE_PATH SOURCE_PATH
     ARCHIVE ${ARCHIVE}
     REF 0.8.0
+    PATCHES
+      "macos-keepidle.patch"
 )
 
 vcpkg_configure_cmake(
