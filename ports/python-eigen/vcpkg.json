@@ -1,0 +1,9 @@
+{
+  "name": "python-eigen",
+  "version-string": "1.0.2",
+  "homepage": "https://github.com/jrl-umi3218/Eigen3ToPython",
+  "description": "Python bindings for the Eigen library",
+  "dependencies": [
+    "eigen3"
+  ]
+}
