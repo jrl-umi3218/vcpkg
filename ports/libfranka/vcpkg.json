@@ -1,0 +1,10 @@
+{
+  "name": "libfranka",
+  "version-string": "0.8.0",
+  "homepage": "https://github.com/frankaemika/libfranka",
+  "description": "C++ library for Franka Emika research robots",
+  "dependencies": [
+    "eigen3",
+    "poco"
+  ]
+}
