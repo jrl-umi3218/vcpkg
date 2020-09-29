@@ -27,7 +27,7 @@ index e78e347..dec4a6f 100644
  # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
  #
  
-+project(python-eigen-qld LANGUAGES CXX)
++project(python-eigen-qld LANGUAGES CXX VERSION ${PROJECT_VERSION})
 +
 +if(NOT TARGET uninstall)
 +  add_custom_target(uninstall)
