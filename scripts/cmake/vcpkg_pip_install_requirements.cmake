@@ -14,7 +14,7 @@ function(vcpkg_pip_install_requirements)
   if(NOT EXISTS "${CURRENT_PORT_DIR}/requirements.txt")
     return()
   endif()
-  find_program(PIP3 NAMES pip3 pip)
+  find_program(PIP3 NAMES pip3 pip pip3.exe pip.exe)
   if(NOT PIP3)
     vcpkg_fail_port_install(
         ALWAYS
