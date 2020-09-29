@@ -1,3 +1,6 @@
+include(vcpkg_amend_python_path)
+vcpkg_amend_python_path()
+
 vcpkg_download_distfile(ARCHIVE
     URLS "https://github.com/jrl-umi3218/SpaceVecAlg/releases/download/v1.1.1/SpaceVecAlg-v1.1.1.tar.gz"
     FILENAME "SpaceVecAlg-v1.1.1.tar.gz"

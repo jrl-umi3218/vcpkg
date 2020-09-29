@@ -1,3 +1,6 @@
+include(vcpkg_amend_python_path)
+vcpkg_amend_python_path()
+
 vcpkg_download_distfile(ARCHIVE
     URLS "https://github.com/jrl-umi3218/eigen-qld/releases/download/v1.2.1/eigen-qld-v1.2.1.tar.gz"
     FILENAME "eigen-qld-v1.2.1.tar.gz"
