@@ -1,0 +1,10 @@
+{
+  "name": "python-spacevecalg",
+  "version-string": "1.1.1",
+  "homepage": "https://github.com/jrl-umi3218/SpaceVecAlg",
+  "description": "Python bindings for the SpaceVecAlg library",
+  "dependencies": [
+    "spacevecalg",
+    "python-eigen"
+  ]
+}

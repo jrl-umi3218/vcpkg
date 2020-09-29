@@ -1,0 +1,46 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1baec86..765ebfa 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,12 +11,15 @@ set(PROJECT_NAME SpaceVecAlg)
+ set(PROJECT_DESCRIPTION "Implementation of spatial vector algebra with the Eigen3 linear algebra library.")
+ set(PROJECT_URL "https://github.com/jrl-umi3218/SpaceVecAlg")
+ set(PROJECT_VERSION 1.1.1)
+-set(PROJECT_USE_CMAKE_EXPORT TRUE)
++set(PROJECT_USE_CMAKE_EXPORT FALSE)
+ 
+ include(cmake/base.cmake)
+ include(cmake/cython/cython.cmake)
+ include(cmake/msvc-specific.cmake)
+ 
++add_subdirectory(binding/python)
++return()
++
+ # Disable -Werror on Unix for now.
+ set(CXX_DISABLE_WERROR True)
+ project(${PROJECT_NAME} CXX)
+diff --git a/binding/python/CMakeLists.txt b/binding/python/CMakeLists.txt
+index 0e66987..c11e181 100644
+--- a/binding/python/CMakeLists.txt
++++ b/binding/python/CMakeLists.txt
+@@ -2,6 +2,20 @@
+ # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
+ #
+ 
++project(python-spacevecalg LANGUAGES CXX)
++
++if(NOT TARGET uninstall)
++  add_custom_target(uninstall)
++endif()
++find_package(SpaceVecAlg REQUIRED)
++set_target_properties(SpaceVecAlg::SpaceVecAlg PROPERTIES IMPORTED_GLOBAL TRUE)
++add_library(SpaceVecAlg ALIAS SpaceVecAlg::SpaceVecAlg)
++if(NOT PYTHON_BINDING)
++  # Dummy install to have a valid target
++  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../LICENSE DESTINATION share/${PROJECT_NAME})
++  return()
++endif()
++
+ ADD_CYTHON_BINDINGS(sva
+   TARGETS SpaceVecAlg
+   EXPORT_SOURCES sva/c_sva.pxd sva/sva.pxd sva/__init__.py
