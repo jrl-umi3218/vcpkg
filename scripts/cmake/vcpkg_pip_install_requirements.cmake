@@ -22,7 +22,7 @@ function(vcpkg_pip_install_requirements)
     )
   endif()
   vcpkg_execute_required_process(
-      COMMAND ${PIP3} install -r requirements.txt
+      COMMAND ${PIP3} install --user -r requirements.txt
       WORKING_DIRECTORY ${CURRENT_PORT_DIR}
   )
 endfunction()
