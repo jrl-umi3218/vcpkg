@@ -41,6 +41,11 @@ jobs:
       shell: bash
       run: >
         ${JRL_MONO} `./vcpkg fetch nuget | tail -n 1` sources add -source "https://nuget.pkg.github.com/jrl-umi3218/index.json" -storepasswordincleartext -name "GitHub" -username "jrl-umi3218" -password "${{ secrets.GITHUB_TOKEN }}"
+    - name: Install python-eigen
+      shell: bash
+      run: |
+        echo "::set-env name=JRL_PORT::python-eigen"
+        ./vcpkg install --debug python-eigen
     - name: Install SpaceVecAlg
       shell: bash
       run: |
