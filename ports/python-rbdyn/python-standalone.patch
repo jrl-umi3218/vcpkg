@@ -1,0 +1,60 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 000b66c..a174a45 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,7 +11,7 @@ set(PROJECT_DESCRIPTION "...")
+ set(PROJECT_URL "https://github.com/jrl-umi3218/RBDyn")
+ set(PROJECT_DEBUG_POSTFIX "_d")
+ set(PROJECT_VERSION 1.3.0)
+-set(PROJECT_USE_CMAKE_EXPORT TRUE)
++set(PROJECT_USE_CMAKE_EXPORT FALSE)
+ 
+ option(BUILD_RBDYN_PARSERS "Build URDF and YAML parsers" ON)
+ 
+@@ -19,6 +19,9 @@ include(cmake/base.cmake)
+ include(cmake/cython/cython.cmake)
+ include(cmake/msvc-specific.cmake)
+ 
++add_subdirectory(binding/python)
++return()
++
+ project(RBDyn CXX)
+ 
+ option(BENCHMARKS "Generate benchmarks." OFF)
+diff --git a/binding/python/CMakeLists.txt b/binding/python/CMakeLists.txt
+index 58f1953..35d5957 100644
+--- a/binding/python/CMakeLists.txt
++++ b/binding/python/CMakeLists.txt
+@@ -2,6 +2,19 @@
+ # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
+ #
+ 
++project(python-rbdyn LANGUAGES CXX)
++
++if(NOT TARGET uninstall)
++  add_custom_target(uninstall)
++endif()
++find_package(RBDyn REQUIRED)
++set_target_properties(RBDyn::RBDyn PROPERTIES IMPORTED_GLOBAL TRUE)
++add_library(RBDyn ALIAS RBDyn::RBDyn)
++if(NOT PYTHON_BINDING)
++  install(CODE "message(\"Dummy install target\")")
++  return()
++endif()
++
+ set(RBDYN_BINDINGS_MODULES rbdyn.rbdyn)
+ set(RBDYN_BINDINGS_EXPORT_SOURCES rbdyn/c_rbdyn.pxd rbdyn/rbdyn.pxd rbdyn/__init__.py)
+ set(RBDYN_BINDINGS_PRIVATE_SOURCES include/rbdyn_wrapper.hpp rbdyn/rbdyn.pyx rbdyn/c_rbdyn_private.pxd tests/test_rbdyn_pickle.py)
+diff --git a/cmake/cython/setup.in.py b/cmake/cython/setup.in.py
+index 6821ffe..4b10b1f 100644
+--- a/cmake/cython/setup.in.py
++++ b/cmake/cython/setup.in.py
+@@ -54,7 +54,7 @@ class pkg_config(object):
+         self.include_dirs = list(set(self.include_dirs))
+         library_dirs = "@CYTHON_BINDINGS_LINK_FLAGS@"
+         self.library_dirs = [ x for x in library_dirs.split(';') if len(x) ]
+-        self.libraries = [ re.sub("^lib", "", os.path.splitext(os.path.basename(l))[0]) for l in "@CYTHON_BINDINGS_LIBRARIES@".split(";") if len(l) ]
++        self.libraries = [ re.sub("^lib", "", os.path.basename(l).split(os.extsep)[0]) for l in "@CYTHON_BINDINGS_LIBRARIES@".split(";") if len(l) ]
+         self.libraries = list(set(self.libraries))
+         self.library_dirs += [os.path.dirname(l) for l in "@CYTHON_BINDINGS_TARGET_FILES@".split(';') if len(l) ]
+         self.library_dirs = list(set(self.library_dirs))
