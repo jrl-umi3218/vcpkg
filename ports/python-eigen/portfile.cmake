@@ -1,3 +1,11 @@
+find_program(PIP3 NAMES pip3 pip)
+if(NOT PIP3)
+  vcpkg_fail_port_install(
+      ALWAYS
+      MESSAGE "You must have pip3 or pip installed on this machine to install this port"
+  )
+endif()
+
 vcpkg_download_distfile(ARCHIVE
     URLS "https://github.com/jrl-umi3218/Eigen3ToPython/releases/download/v1.0.2/Eigen3ToPython-v1.0.2.tar.gz"
     FILENAME "Eigen3ToPython-v1.0.2.tar.gz"
@@ -8,6 +16,11 @@ vcpkg_extract_source_archive_ex(
     OUT_SOURCE_PATH SOURCE_PATH
     ARCHIVE ${ARCHIVE}
     REF 1.0.2
+)
+
+vcpkg_execute_required_process(
+    COMMAND ${PIP3} install -r requirements.txt
+    WORKING_DIRECTORY ${SOURCE_PATH}
 )
 
 vcpkg_configure_cmake(
