@@ -1,0 +1,10 @@
+{
+  "name": "python-sch-core",
+  "version-string": "1.0.2",
+  "homepage": "https://github.com/jrl-umi3218/sch-core-python",
+  "description": "Python bindings for the sch-core library",
+  "dependencies": [
+    "sch-core",
+    "python-spacevecalg"
+  ]
+}
