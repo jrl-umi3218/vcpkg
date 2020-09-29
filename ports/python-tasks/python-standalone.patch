@@ -1,0 +1,60 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index eb60833..6b5564d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -9,7 +9,7 @@ set(PROJECT_DESCRIPTION "...")
+ set(PROJECT_URL "https://github.com/jrl-umi3218/Tasks")
+ set(PROJECT_DEBUG_POSTFIX "_d")
+ set(PROJECT_VERSION 1.3.0)
+-set(PROJECT_USE_CMAKE_EXPORT TRUE)
++set(PROJECT_USE_CMAKE_EXPORT FALSE)
+ 
+ # Disable -Werror on Unix for now.
+ set(CXX_DISABLE_WERROR True)
+@@ -19,6 +19,9 @@ include(cmake/base.cmake)
+ include(cmake/cython/cython.cmake)
+ include(cmake/msvc-specific.cmake)
+ 
++add_subdirectory(binding/python)
++return()
++
+ project(Tasks  CXX)
+ 
+ add_definitions(-mfpmath=sse -msse2)
+diff --git a/binding/python/CMakeLists.txt b/binding/python/CMakeLists.txt
+index c18eb14..c4a117f 100644
+--- a/binding/python/CMakeLists.txt
++++ b/binding/python/CMakeLists.txt
+@@ -2,6 +2,19 @@
+ # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
+ #
+ 
++project(python-tasks LANGUAGES CXX VERSION ${PROJECT_VERSION})
++
++if(NOT TARGET uninstall)
++  add_custom_target(uninstall)
++endif()
++find_package(Tasks REQUIRED)
++set_target_properties(Tasks::Tasks PROPERTIES IMPORTED_GLOBAL TRUE)
++add_library(Tasks ALIAS Tasks::Tasks)
++if(NOT PYTHON_BINDING)
++  install(CODE "message(\"Dummy install target\")")
++  return()
++endif()
++
+ add_cython_bindings(tasks
+   TARGETS Tasks
+   MODULES tasks.tasks tasks.qp.qp
+diff --git a/cmake/cython/setup.in.py b/cmake/cython/setup.in.py
+index 6821ffe..4b10b1f 100644
+--- a/cmake/cython/setup.in.py
++++ b/cmake/cython/setup.in.py
+@@ -54,7 +54,7 @@ class pkg_config(object):
+         self.include_dirs = list(set(self.include_dirs))
+         library_dirs = "@CYTHON_BINDINGS_LINK_FLAGS@"
+         self.library_dirs = [ x for x in library_dirs.split(';') if len(x) ]
+-        self.libraries = [ re.sub("^lib", "", os.path.splitext(os.path.basename(l))[0]) for l in "@CYTHON_BINDINGS_LIBRARIES@".split(";") if len(l) ]
++        self.libraries = [ re.sub("^lib", "", os.path.basename(l).split(os.extsep)[0]) for l in "@CYTHON_BINDINGS_LIBRARIES@".split(";") if len(l) ]
+         self.libraries = list(set(self.libraries))
+         self.library_dirs += [os.path.dirname(l) for l in "@CYTHON_BINDINGS_TARGET_FILES@".split(';') if len(l) ]
+         self.library_dirs = list(set(self.library_dirs))

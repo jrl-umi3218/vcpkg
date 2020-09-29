@@ -1,0 +1,12 @@
+{
+  "name": "python-tasks",
+  "version-string": "1.3.0",
+  "homepage": "https://github.com/jrl-umi3218/Tasks",
+  "description": "Python bindings for the Tasks library",
+  "dependencies": [
+    "tasks",
+    "python-rbdyn",
+    "python-eigen-qld",
+    "python-sch-core"
+  ]
+}
