@@ -33,4 +33,7 @@ vcpkg_install_cmake()
 
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 
+include(vcpkg_remove_pycache)
+vcpkg_remove_pycache(tasks)
+
 set(VCPKG_POLICY_EMPTY_INCLUDE_FOLDER enabled)

@@ -34,6 +34,7 @@ vcpkg_install_cmake()
 
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/python-spacevecalg RENAME copyright)
 
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug)
+include(vcpkg_remove_pycache)
+vcpkg_remove_pycache(sva)
 
 set(VCPKG_POLICY_EMPTY_INCLUDE_FOLDER enabled)

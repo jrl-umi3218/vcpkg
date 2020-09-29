@@ -29,4 +29,7 @@ vcpkg_install_cmake()
 # Handle copyright
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/python-eigen RENAME copyright)
 
+include(vcpkg_remove_pycache)
+vcpkg_remove_pycache(eigen)
+
 set(VCPKG_POLICY_EMPTY_INCLUDE_FOLDER enabled)
