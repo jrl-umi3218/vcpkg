@@ -1,6 +1,9 @@
 include(vcpkg_amend_python_path)
 vcpkg_amend_python_path()
 
+include(vcpkg_pip_install_requirements)
+vcpkg_pip_install_requirements()
+
 vcpkg_download_distfile(ARCHIVE
     URLS "https://github.com/jrl-umi3218/sch-core-python/releases/download/v1.0.2/sch-core-python-v1.0.2.tar.gz"
     FILENAME "sch-core-python-v1.0.2.tar.gz"

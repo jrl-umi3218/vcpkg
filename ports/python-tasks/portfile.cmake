@@ -1,6 +1,9 @@
 include(vcpkg_amend_python_path)
 vcpkg_amend_python_path()
 
+include(vcpkg_pip_install_requirements)
+vcpkg_pip_install_requirements()
+
 vcpkg_download_distfile(ARCHIVE
     URLS "https://github.com/jrl-umi3218/Tasks/releases/download/v1.3.0/Tasks-v1.3.0.tar.gz"
     FILENAME "Tasks-v1.3.0.tar.gz"
