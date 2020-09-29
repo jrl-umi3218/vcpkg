@@ -1,0 +1,10 @@
+{
+  "name": "python-eigen-qld",
+  "version-string": "1.2.1",
+  "homepage": "https://github.com/jrl-umi3218/eigen-qld",
+  "description": "Python bindings for the eigen-qld library",
+  "dependencies": [
+    "eigen-qld",
+    "python-eigen"
+  ]
+}

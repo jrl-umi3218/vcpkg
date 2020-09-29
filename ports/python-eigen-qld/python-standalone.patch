@@ -1,0 +1,58 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d0dc60a..0cad2a1 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -10,12 +10,15 @@ set(PROJECT_NAME eigen-qld)
+ set(PROJECT_DESCRIPTION "QLD QP solver through Eigen3 library.")
+ set(PROJECT_URL "https://github.com/jrl-umi3218/eigen-qld")
+ set(PROJECT_VERSION 1.2.1)
+-set(PROJECT_USE_CMAKE_EXPORT TRUE)
++set(PROJECT_USE_CMAKE_EXPORT FALSE)
+ 
+ include(cmake/base.cmake)
+ include(cmake/cython/cython.cmake)
+ include(cmake/msvc-specific.cmake)
+ 
++add_subdirectory(binding/python)
++return()
++
+ # Disable -Werror on Unix for now.
+ set(CXX_DISABLE_WERROR True)
+ set(DOXYGEN_USE_MATHJAX "YES")
+diff --git a/binding/python/CMakeLists.txt b/binding/python/CMakeLists.txt
+index e78e347..dec4a6f 100644
+--- a/binding/python/CMakeLists.txt
++++ b/binding/python/CMakeLists.txt
+@@ -2,6 +2,19 @@
+ # Copyright 2012-2019 CNRS-UM LIRMM, CNRS-AIST JRL
+ #
+ 
++project(python-eigen-qld LANGUAGES CXX)
++
++if(NOT TARGET uninstall)
++  add_custom_target(uninstall)
++endif()
++find_package(eigen-qld REQUIRED)
++set_target_properties(eigen-qld::eigen-qld PROPERTIES IMPORTED_GLOBAL TRUE)
++add_library(eigen-qld ALIAS eigen-qld::eigen-qld)
++if(NOT PYTHON_BINDING)
++  install(CODE "message(\"Dummy install target\")")
++  return()
++endif()
++
+ ADD_CYTHON_BINDINGS(eigen_qld
+   TARGETS eigen-qld
+   EXPORT_SOURCES eigen_qld/c_eigen_qld.pxd eigen_qld/eigen_qld.pxd eigen_qld/__init__.py
+diff --git a/cmake/cython/setup.in.py b/cmake/cython/setup.in.py
+index 6821ffe..4b10b1f 100644
+--- a/cmake/cython/setup.in.py
++++ b/cmake/cython/setup.in.py
+@@ -54,7 +54,7 @@ class pkg_config(object):
+         self.include_dirs = list(set(self.include_dirs))
+         library_dirs = "@CYTHON_BINDINGS_LINK_FLAGS@"
+         self.library_dirs = [ x for x in library_dirs.split(';') if len(x) ]
+-        self.libraries = [ re.sub("^lib", "", os.path.splitext(os.path.basename(l))[0]) for l in "@CYTHON_BINDINGS_LIBRARIES@".split(";") if len(l) ]
++        self.libraries = [ re.sub("^lib", "", os.path.basename(l).split(os.extsep)[0]) for l in "@CYTHON_BINDINGS_LIBRARIES@".split(";") if len(l) ]
+         self.libraries = list(set(self.libraries))
+         self.library_dirs += [os.path.dirname(l) for l in "@CYTHON_BINDINGS_TARGET_FILES@".split(';') if len(l) ]
+         self.library_dirs = list(set(self.library_dirs))
