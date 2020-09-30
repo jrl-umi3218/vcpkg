@@ -29,6 +29,7 @@ jobs:
       if: startsWith(runner.os, 'Linux')
       run: |
         export CXX=g++ # Enforce default g++ selection
+        sudo apt-get install -y python3-setuptools
         ./bootstrap-vcpkg.sh
         echo "::set-env name=JRL_MONO::mono"
     - name: Bootstrap vcpkg (macOS)
