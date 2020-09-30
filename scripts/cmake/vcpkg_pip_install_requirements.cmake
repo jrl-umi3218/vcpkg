@@ -15,6 +15,7 @@ function(vcpkg_pip_install_requirements)
     return()
   endif()
   if(WIN32)
+    # Edit this to match your local setup
     vcpkg_add_to_path("C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\")
     vcpkg_add_to_path("C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\Scripts")
     set(PIP3 pip)
