@@ -14,7 +14,11 @@ function(vcpkg_pip_install_requirements)
   if(NOT EXISTS "${CURRENT_PORT_DIR}/requirements.txt")
     return()
   endif()
-  set(PIP3 pip3)
+  if(WIN32)
+    set(PIP3 pip)
+  else()
+    set(PIP3 pip3)
+  endif()
   vcpkg_execute_required_process(
       COMMAND ${PIP3} install --user -r requirements.txt
       WORKING_DIRECTORY ${CURRENT_PORT_DIR}

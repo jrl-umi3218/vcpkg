@@ -19,13 +19,17 @@ vcpkg_extract_source_archive_ex(
       python-standalone.patch
 )
 
-vcpkg_add_to_path("${MINGW_BIN}")
+if(WIN32)
+  set(PYTHON_BINDING_OPTION "")
+else()
+  set(PYTHON_BINDING_OPTION "-DPYTHON_BINDING_FORCE_PYTHON3:BOOL=ON")
+endif()
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
       -DBUILD_TESTING:BOOL=OFF
-      -DPYTHON_BINDING_FORCE_PYTHON3:BOOL=ON
+      ${PYTHON_BINDING_OPTION}
       -DPIP_INSTALL_PREFIX=${CURRENT_PACKAGES_DIR}
     OPTIONS_DEBUG
       -DPYTHON_BINDING:BOOL=OFF

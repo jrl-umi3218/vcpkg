@@ -11,7 +11,11 @@ function(vcpkg_amend_python_path)
   if(DEFINED VCPKG_DOWNLOAD_MODE)
     return()
   endif()
-  set(PYTHON3 python3)
+  if(WIN32)
+    set(PYTHON3 python)
+  else()
+    set(PYTHON3 python3)
+  endif()
   execute_process(
     COMMAND ${PYTHON3} -c "import sys; print(\"python{}.{}\".format(sys.version_info.major, sys.version_info.minor));"
     OUTPUT_VARIABLE PYTHON3_VERSION
