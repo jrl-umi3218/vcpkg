@@ -14,17 +14,7 @@ function(vcpkg_pip_install_requirements)
   if(NOT EXISTS "${CURRENT_PORT_DIR}/requirements.txt")
     return()
   endif()
-  if(WIN32)
-    set(PIP3 pip3)
-  else()
-    find_program(PIP3 NAMES pip3 pip pip3.exe pip.exe)
-    if(NOT PIP3)
-      vcpkg_fail_port_install(
-          ALWAYS
-          MESSAGE "You must have pip3 or pip installed on this machine to install this port"
-      )
-    endif()
-  endif()
+  set(PIP3 pip3)
   vcpkg_execute_required_process(
       COMMAND ${PIP3} install --user -r requirements.txt
       WORKING_DIRECTORY ${CURRENT_PORT_DIR}
