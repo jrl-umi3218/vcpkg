@@ -38,4 +38,6 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug)
 include(vcpkg_remove_pycache)
 vcpkg_remove_pycache(rbdyn)
 
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+
 set(VCPKG_POLICY_EMPTY_INCLUDE_FOLDER enabled)
