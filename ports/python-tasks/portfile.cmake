@@ -16,6 +16,7 @@ vcpkg_extract_source_archive_ex(
     REF 1.3.0
     PATCHES
       python-standalone.patch
+      set-cmake-cxx-standard.patch
 )
 
 vcpkg_configure_cmake(
