@@ -10,6 +10,8 @@ vcpkg_extract_source_archive_ex(
     REF 0.8.0
     PATCHES
       "macos-keepidle.patch"
+      "windows-compilation.patch"
+      "dllapi.patch"
 )
 
 vcpkg_configure_cmake(

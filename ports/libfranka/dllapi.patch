@@ -1,0 +1,620 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 15bae8d..550abd5 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -76,7 +76,7 @@ add_library(franka SHARED
+ add_library(Franka::Franka ALIAS franka)
+ 
+ set_target_properties(franka PROPERTIES
+-  WINDOWS_EXPORT_ALL_SYMBOLS ON
++  COMPILE_FLAGS "-DFRANKA_EXPORTS"
+   VERSION ${libfranka_VERSION}
+   SOVERSION ${libfranka_VERSION_MAJOR}.${libfranka_VERSION_MINOR} # Use minor version while we're at 0.x
+   EXPORT_NAME Franka
+@@ -116,6 +116,7 @@ set(INSTALL_CMAKE_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/Franka)
+ 
+ install(TARGETS franka
+   EXPORT FrankaTargets
++  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+ )
+diff --git a/include/franka/api.h b/include/franka/api.h
+new file mode 100644
+index 0000000..6aa521a
+--- /dev/null
++++ b/include/franka/api.h
+@@ -0,0 +1,46 @@
++#pragma once
++
++// Handle portable symbol export.
++// Defining manually which symbol should be exported is required
++// under Windows whether MinGW or MSVC is used.
++//
++// The headers then have to be able to work in two different modes:
++// - dllexport when one is building the library,
++// - dllimport for clients using the library.
++//
++// On Linux, set the visibility accordingly. If C++ symbol visibility
++// is handled by the compiler, see: http://gcc.gnu.org/wiki/Visibility
++#if defined _WIN32 || defined __CYGWIN__
++// On Microsoft Windows, use dllimport and dllexport to tag symbols.
++#  define FRANKA_DLLIMPORT __declspec(dllimport)
++#  define FRANKA_DLLEXPORT __declspec(dllexport)
++#  define FRANKA_DLLLOCAL
++#else
++// On Linux, for GCC >= 4, tag symbols using GCC extension.
++#  if __GNUC__ >= 4
++#    define FRANKA_DLLIMPORT __attribute__((visibility("default")))
++#    define FRANKA_DLLEXPORT __attribute__((visibility("default")))
++#    define FRANKA_DLLLOCAL __attribute__((visibility("hidden")))
++#  else
++// Otherwise (GCC < 4 or another compiler is used), export everything.
++#    define FRANKA_DLLIMPORT
++#    define FRANKA_DLLEXPORT
++#    define FRANKA_DLLLOCAL
++#  endif // __GNUC__ >= 4
++#endif // defined _WIN32 || defined __CYGWIN__
++
++#ifdef FRANKA_STATIC
++// If one is using the library statically, get rid of
++// extra information.
++#  define FRANKA_DLLAPI
++#  define FRANKA_LOCAL
++#else
++// Depending on whether one is building or using the
++// library define DLLAPI to import or export.
++#  ifdef FRANKA_EXPORTS
++#    define FRANKA_DLLAPI FRANKA_DLLEXPORT
++#  else
++#    define FRANKA_DLLAPI FRANKA_DLLIMPORT
++#  endif // FRANKA_EXPORTS
++#  define FRANKA_LOCAL FRANKA_DLLLOCAL
++#endif // FRANKA_STATIC
+\ No newline at end of file
+diff --git a/include/franka/command_types.h b/include/franka/command_types.h
+index 917fd03..59857da 100644
+--- a/include/franka/command_types.h
++++ b/include/franka/command_types.h
+@@ -5,6 +5,8 @@
+ #include <array>
+ #include <cstdint>
+ 
++#include <franka/api.h>
++
+ /**
+  * @file command_types.h
+  * Contains types for the commands that can be sent from franka::Robot.
+diff --git a/include/franka/control_tools.h b/include/franka/control_tools.h
+index 0bd2c30..7bf311a 100644
+--- a/include/franka/control_tools.h
++++ b/include/franka/control_tools.h
+@@ -6,6 +6,8 @@
+ #include <cmath>
+ #include <string>
+ 
++#include <franka/api.h>
++
+ /**
+  * @file control_tools.h
+  * Contains helper functions for writing control loops.
+@@ -62,7 +64,7 @@ inline bool isHomogeneousTransformation(const std::array<double, 16>& transform)
+  *
+  * @return True if running a realtime kernel, false otherwise.
+  */
+-bool hasRealtimeKernel();
++bool FRANKA_DLLAPI hasRealtimeKernel();
+ 
+ /**
+  * Sets the current thread to the highest possible scheduler priority.
+@@ -72,6 +74,6 @@ bool hasRealtimeKernel();
+  *
+  * @return True if successful, false otherwise.
+  */
+-bool setCurrentThreadToHighestSchedulerPriority(std::string* error_message);
++bool FRANKA_DLLAPI setCurrentThreadToHighestSchedulerPriority(std::string* error_message);
+ 
+ }  // namespace franka
+diff --git a/include/franka/control_types.h b/include/franka/control_types.h
+index d49c0cd..0bb8fc4 100644
+--- a/include/franka/control_types.h
++++ b/include/franka/control_types.h
+@@ -6,6 +6,8 @@
+ #include <cmath>
+ #include <initializer_list>
+ 
++#include <franka/api.h>
++
+ /**
+  * @file control_types.h
+  * Contains helper types for returning motion generation and joint-level torque commands.
+@@ -42,7 +44,7 @@ struct Finishable {
+ /**
+  * Stores joint-level torque commands without gravity and friction.
+  */
+-class Torques : public Finishable {
++class FRANKA_DLLAPI Torques : public Finishable {
+  public:
+   /**
+    * Creates a new Torques instance.
+@@ -69,7 +71,7 @@ class Torques : public Finishable {
+ /**
+  * Stores values for joint position motion generation.
+  */
+-class JointPositions : public Finishable {
++class FRANKA_DLLAPI JointPositions : public Finishable {
+  public:
+   /**
+    * Creates a new JointPositions instance.
+@@ -96,7 +98,7 @@ class JointPositions : public Finishable {
+ /**
+  * Stores values for joint velocity motion generation.
+  */
+-class JointVelocities : public Finishable {
++class FRANKA_DLLAPI JointVelocities : public Finishable {
+  public:
+   /**
+    * Creates a new JointVelocities instance.
+@@ -124,7 +126,7 @@ class JointVelocities : public Finishable {
+ /**
+  * Stores values for Cartesian pose motion generation.
+  */
+-class CartesianPose : public Finishable {
++class FRANKA_DLLAPI CartesianPose : public Finishable {
+  public:
+   /**
+    * Creates a new CartesianPose instance.
+@@ -198,7 +200,7 @@ class CartesianPose : public Finishable {
+ /**
+  * Stores values for Cartesian velocity motion generation.
+  */
+-class CartesianVelocities : public Finishable {
++class FRANKA_DLLAPI CartesianVelocities : public Finishable {
+  public:
+   /**
+    * Creates a new CartesianVelocities instance.
+diff --git a/include/franka/duration.h b/include/franka/duration.h
+index 28cdf81..3fa5f42 100644
+--- a/include/franka/duration.h
++++ b/include/franka/duration.h
+@@ -6,6 +6,8 @@
+ #include <cstdint>
+ #include <ratio>
+ 
++#include <franka/api.h>
++
+ /**
+  * @file duration.h
+  * Contains the franka::Duration type.
+@@ -16,7 +18,7 @@ namespace franka {
+ /**
+  * Represents a duration with millisecond resolution.
+  */
+-class Duration {
++class FRANKA_DLLAPI Duration {
+  public:
+   /**
+    * Creates a new Duration instance with zero milliseconds.
+@@ -260,6 +262,6 @@ class Duration {
+  *
+  * @return Result of the multiplication.
+  */
+-Duration operator*(uint64_t lhs, const Duration& rhs) noexcept;
++FRANKA_DLLAPI Duration operator*(uint64_t lhs, const Duration& rhs) noexcept;
+ 
+ }  // namespace franka
+diff --git a/include/franka/errors.h b/include/franka/errors.h
+index 396684d..01f9f76 100644
+--- a/include/franka/errors.h
++++ b/include/franka/errors.h
+@@ -5,6 +5,8 @@
+ #include <array>
+ #include <ostream>
+ 
++#include <franka/api.h>
++
+ /**
+  * @file errors.h
+  * Contains the franka::Errors type.
+@@ -15,7 +17,7 @@ namespace franka {
+ /**
+  * Enumerates errors that can occur while controlling a franka::Robot.
+  */
+-struct Errors {
++struct FRANKA_DLLAPI Errors {
+  private:
+   std::array<bool, 37> errors_{};
+ 
+@@ -237,6 +239,6 @@ struct Errors {
+  *
+  * @return Ostream instance
+  */
+-std::ostream& operator<<(std::ostream& ostream, const Errors& errors);
++FRANKA_DLLAPI std::ostream& operator<<(std::ostream& ostream, const Errors& errors);
+ 
+ }  // namespace franka
+diff --git a/include/franka/exception.h b/include/franka/exception.h
+index 51abf8e..abecfab 100644
+--- a/include/franka/exception.h
++++ b/include/franka/exception.h
+@@ -5,6 +5,7 @@
+ #include <stdexcept>
+ #include <string>
+ 
++#include <franka/api.h>
+ #include <franka/log.h>
+ 
+ /**
+@@ -17,14 +18,14 @@ namespace franka {
+ /**
+  * Base class for all exceptions used by `libfranka`.
+  */
+-struct Exception : public std::runtime_error {
++struct FRANKA_DLLAPI Exception : public std::runtime_error {
+   using std::runtime_error::runtime_error;
+ };
+ 
+ /**
+  * ModelException is thrown if an error occurs when loading the model library.
+  */
+-struct ModelException : public Exception {
++struct FRANKA_DLLAPI ModelException : public Exception {
+   using Exception::Exception;
+ };
+ 
+@@ -32,21 +33,21 @@ struct ModelException : public Exception {
+  * NetworkException is thrown if a connection to the robot cannot be established, or when a timeout
+  * occurs.
+  */
+-struct NetworkException : public Exception {
++struct FRANKA_DLLAPI NetworkException : public Exception {
+   using Exception::Exception;
+ };
+ 
+ /**
+  * ProtocolException is thrown if the robot returns an incorrect message.
+  */
+-struct ProtocolException : public Exception {
++struct FRANKA_DLLAPI ProtocolException : public Exception {
+   using Exception::Exception;
+ };
+ 
+ /**
+  * IncompatibleVersionException is thrown if the robot does not support this version of libfranka.
+  */
+-struct IncompatibleVersionException : public Exception {
++struct FRANKA_DLLAPI IncompatibleVersionException : public Exception {
+   /**
+    * Creates the exception using the two different protocol versions.
+    * @param[in] server_version Protocol version on the Control side.
+@@ -70,7 +71,7 @@ struct IncompatibleVersionException : public Exception {
+  * states can be configured in the Robot constructor.
+  *
+  */
+-struct ControlException : public Exception {
++struct FRANKA_DLLAPI ControlException : public Exception {
+   /**
+    * Creates the exception with an explanatory string and a Log object.
+    *
+@@ -88,21 +89,21 @@ struct ControlException : public Exception {
+ /**
+  * CommandException is thrown if an error occurs during command execution.
+  */
+-struct CommandException : public Exception {
++struct FRANKA_DLLAPI CommandException : public Exception {
+   using Exception::Exception;
+ };
+ 
+ /**
+  * RealtimeException is thrown if realtime priority cannot be set.
+  */
+-struct RealtimeException : public Exception {
++struct FRANKA_DLLAPI RealtimeException : public Exception {
+   using Exception::Exception;
+ };
+ 
+ /**
+  * InvalidOperationException is thrown if an operation cannot be performed.
+  */
+-struct InvalidOperationException : public Exception {
++struct FRANKA_DLLAPI InvalidOperationException : public Exception {
+   using Exception::Exception;
+ };
+ 
+diff --git a/include/franka/gripper.h b/include/franka/gripper.h
+index 8c3329d..fab9a4b 100644
+--- a/include/franka/gripper.h
++++ b/include/franka/gripper.h
+@@ -6,6 +6,7 @@
+ #include <memory>
+ #include <string>
+ 
++#include <franka/api.h>
+ #include <franka/gripper_state.h>
+ 
+ /**
+@@ -24,7 +25,7 @@ class Network;
+  * @note
+  * The members of this class are threadsafe.
+  */
+-class Gripper {
++class FRANKA_DLLAPI Gripper {
+  public:
+   /**
+    * Version of the gripper server.
+diff --git a/include/franka/gripper_state.h b/include/franka/gripper_state.h
+index ff2bb79..5becfa2 100644
+--- a/include/franka/gripper_state.h
++++ b/include/franka/gripper_state.h
+@@ -5,6 +5,7 @@
+ #include <cstdint>
+ #include <ostream>
+ 
++#include <franka/api.h>
+ #include <franka/duration.h>
+ 
+ /**
+@@ -17,7 +18,7 @@ namespace franka {
+ /**
+  * Describes the gripper state.
+  */
+-struct GripperState {
++struct FRANKA_DLLAPI GripperState {
+   /**
+    * Current gripper opening width. Unit: \f$[m]\f$.
+    */
+@@ -56,6 +57,6 @@ struct GripperState {
+  *
+  * @return Ostream instance
+  */
+-std::ostream& operator<<(std::ostream& ostream, const franka::GripperState& gripper_state);
++FRANKA_DLLAPI std::ostream& operator<<(std::ostream& ostream, const franka::GripperState& gripper_state);
+ 
+ }  // namespace franka
+diff --git a/include/franka/log.h b/include/franka/log.h
+index 9a2870d..4f1714a 100644
+--- a/include/franka/log.h
++++ b/include/franka/log.h
+@@ -4,6 +4,7 @@
+ 
+ #include <vector>
+ 
++#include <franka/api.h>
+ #include <franka/control_types.h>
+ #include <franka/robot_state.h>
+ 
+@@ -66,5 +67,5 @@ struct Record {
+  *
+  * @return a string in CSV format, or empty string.
+  */
+-std::string logToCSV(const std::vector<Record>& log);
++FRANKA_DLLAPI std::string logToCSV(const std::vector<Record>& log);
+ }  // namespace franka
+diff --git a/include/franka/lowpass_filter.h b/include/franka/lowpass_filter.h
+index 6ba4758..4e592c1 100644
+--- a/include/franka/lowpass_filter.h
++++ b/include/franka/lowpass_filter.h
+@@ -5,6 +5,8 @@
+ #include <array>
+ #include <cmath>
+ 
++#include <franka/api.h>
++
+ /**
+  * @file lowpass_filter.h
+  * Contains functions for filtering signals with a low-pass filter.
+@@ -34,7 +36,7 @@ constexpr double kDefaultCutoffFrequency = 100.0;
+  *
+  * @return Filtered value.
+  */
+-double lowpassFilter(double sample_time, double y, double y_last, double cutoff_frequency);
++FRANKA_DLLAPI double lowpassFilter(double sample_time, double y, double y_last, double cutoff_frequency);
+ 
+ /**
+  * Applies a first-order low-pass filter to the translation and spherical linear interpolation
+@@ -53,8 +55,8 @@ double lowpassFilter(double sample_time, double y, double y_last, double cutoff_
+  * @return Filtered Cartesian transformation matrix.
+  */
+ 
+-std::array<double, 16> cartesianLowpassFilter(double sample_time,
+-                                              std::array<double, 16> y,
+-                                              std::array<double, 16> y_last,
+-                                              double cutoff_frequency);
++FRANKA_DLLAPI  std::array<double, 16> cartesianLowpassFilter(double sample_time,
++                                                             std::array<double, 16> y,
++                                                             std::array<double, 16> y_last,
++                                                             double cutoff_frequency);
+ }  // namespace franka
+diff --git a/include/franka/model.h b/include/franka/model.h
+index e2bc65c..ede5e64 100644
+--- a/include/franka/model.h
++++ b/include/franka/model.h
+@@ -5,6 +5,7 @@
+ #include <array>
+ #include <memory>
+ 
++#include <franka/api.h>
+ #include <franka/robot.h>
+ #include <franka/robot_state.h>
+ 
+@@ -40,7 +41,7 @@ enum class Frame {
+  *
+  * @return Original Frame.
+  */
+-Frame operator++(Frame& frame, int /* dummy */) noexcept;
++FRANKA_DLLAPI Frame operator++(Frame& frame, int /* dummy */) noexcept;
+ 
+ class ModelLibrary;
+ class Network;
+@@ -48,7 +49,7 @@ class Network;
+ /**
+  * Calculates poses of joints and dynamic properties of the robot.
+  */
+-class Model {
++class FRANKA_DLLAPI Model {
+  public:
+   /**
+    * Creates a new Model instance.
+diff --git a/include/franka/rate_limiting.h b/include/franka/rate_limiting.h
+index 698f3ae..1f2cdb1 100644
+--- a/include/franka/rate_limiting.h
++++ b/include/franka/rate_limiting.h
+@@ -5,6 +5,8 @@
+ #include <array>
+ #include <limits>
+ 
++#include <franka/api.h>
++
+ /**
+  * @file rate_limiting.h
+  * Contains functions for limiting the rate of torques, Cartesian pose, Cartesian velocity,
+@@ -117,9 +119,9 @@ constexpr double kMaxElbowVelocity =
+  *
+  * @return Rate-limited vector of desired values.
+  */
+-std::array<double, 7> limitRate(const std::array<double, 7>& max_derivatives,
+-                                const std::array<double, 7>& commanded_values,
+-                                const std::array<double, 7>& last_commanded_values);
++FRANKA_DLLAPI std::array<double, 7> limitRate(const std::array<double, 7>& max_derivatives,
++                                              const std::array<double, 7>& commanded_values,
++                                              const std::array<double, 7>& last_commanded_values);
+ 
+ /**
+  * Limits the rate of a desired joint velocity considering the limits provided.
+@@ -138,7 +140,7 @@ std::array<double, 7> limitRate(const std::array<double, 7>& max_derivatives,
+  *
+  * @return Rate-limited desired joint velocity.
+  */
+-double limitRate(double max_velocity,
++FRANKA_DLLAPI double limitRate(double max_velocity,
+                  double max_acceleration,
+                  double max_jerk,
+                  double commanded_velocity,
+@@ -163,7 +165,7 @@ double limitRate(double max_velocity,
+  *
+  * @return Rate-limited desired joint position.
+  */
+-double limitRate(double max_velocity,
++FRANKA_DLLAPI double limitRate(double max_velocity,
+                  double max_acceleration,
+                  double max_jerk,
+                  double commanded_position,
+@@ -188,7 +190,7 @@ double limitRate(double max_velocity,
+  *
+  * @return Rate-limited vector of desired joint velocities.
+  */
+-std::array<double, 7> limitRate(const std::array<double, 7>& max_velocity,
++FRANKA_DLLAPI std::array<double, 7> limitRate(const std::array<double, 7>& max_velocity,
+                                 const std::array<double, 7>& max_acceleration,
+                                 const std::array<double, 7>& max_jerk,
+                                 const std::array<double, 7>& commanded_velocities,
+@@ -213,7 +215,7 @@ std::array<double, 7> limitRate(const std::array<double, 7>& max_velocity,
+  *
+  * @return Rate-limited vector of desired joint positions.
+  */
+-std::array<double, 7> limitRate(const std::array<double, 7>& max_velocity,
++FRANKA_DLLAPI std::array<double, 7> limitRate(const std::array<double, 7>& max_velocity,
+                                 const std::array<double, 7>& max_acceleration,
+                                 const std::array<double, 7>& max_jerk,
+                                 const std::array<double, 7>& commanded_positions,
+@@ -241,7 +243,7 @@ std::array<double, 7> limitRate(const std::array<double, 7>& max_velocity,
+  *
+  * @return Rate-limited desired end effector twist.
+  */
+-std::array<double, 6> limitRate(
++FRANKA_DLLAPI std::array<double, 6> limitRate(
+     double max_translational_velocity,
+     double max_translational_acceleration,
+     double max_translational_jerk,
+@@ -273,7 +275,7 @@ std::array<double, 6> limitRate(
+  *
+  * @return Rate-limited desired pose.
+  */
+-std::array<double, 16> limitRate(
++FRANKA_DLLAPI std::array<double, 16> limitRate(
+     double max_translational_velocity,
+     double max_translational_acceleration,
+     double max_translational_jerk,
+diff --git a/include/franka/robot.h b/include/franka/robot.h
+index da70415..0f7cd10 100644
+--- a/include/franka/robot.h
++++ b/include/franka/robot.h
+@@ -7,6 +7,7 @@
+ #include <mutex>
+ #include <string>
+ 
++#include <franka/api.h>
+ #include <franka/command_types.h>
+ #include <franka/control_types.h>
+ #include <franka/duration.h>
+@@ -43,7 +44,7 @@ class Model;
+  * forces.
+  * It can be set with Robot::setK.
+  */
+-class Robot {
++class FRANKA_DLLAPI Robot {
+  public:
+   /**
+    * Version of the robot server.
+diff --git a/include/franka/robot_state.h b/include/franka/robot_state.h
+index 07fb82b..03d0d87 100644
+--- a/include/franka/robot_state.h
++++ b/include/franka/robot_state.h
+@@ -5,6 +5,7 @@
+ #include <array>
+ #include <ostream>
+ 
++#include <franka/api.h>
+ #include <franka/duration.h>
+ #include <franka/errors.h>
+ 
+@@ -378,6 +379,6 @@ struct RobotState {
+  *
+  * @return Ostream instance
+  */
+-std::ostream& operator<<(std::ostream& ostream, const franka::RobotState& robot_state);
++FRANKA_DLLAPI std::ostream& operator<<(std::ostream& ostream, const franka::RobotState& robot_state);
+ 
+ }  // namespace franka
+diff --git a/include/franka/vacuum_gripper.h b/include/franka/vacuum_gripper.h
+index 7c41d80..cc7148b 100644
+--- a/include/franka/vacuum_gripper.h
++++ b/include/franka/vacuum_gripper.h
+@@ -7,6 +7,7 @@
+ #include <memory>
+ #include <string>
+ 
++#include <franka/api.h>
+ #include <franka/vacuum_gripper_state.h>
+ 
+ /**
+@@ -25,7 +26,7 @@ class Network;
+  * @note
+  * The members of this class are threadsafe.
+  */
+-class VacuumGripper {
++class FRANKA_DLLAPI VacuumGripper {
+  public:
+   /**
+    * Version of the vacuum gripper server.
+diff --git a/include/franka/vacuum_gripper_state.h b/include/franka/vacuum_gripper_state.h
+index 32f52a1..d50ea2d 100644
+--- a/include/franka/vacuum_gripper_state.h
++++ b/include/franka/vacuum_gripper_state.h
+@@ -6,6 +6,7 @@
+ #include <ostream>
+ #include <string>
+ 
++#include <franka/api.h>
+ #include <franka/duration.h>
+ 
+ /**
+@@ -74,7 +75,7 @@ struct VacuumGripperState {
+  *
+  * @return Ostream instance
+  */
+-std::ostream& operator<<(std::ostream& ostream,
++FRANKA_DLLAPI std::ostream& operator<<(std::ostream& ostream,
+                          const franka::VacuumGripperState& vacuum_gripper_state);
+ 
+ }  // namespace franka
