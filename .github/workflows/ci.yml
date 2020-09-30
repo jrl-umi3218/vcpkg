@@ -47,10 +47,14 @@ jobs:
         echo "::set-env name=JRL_PORT::python-eigen"
         ./vcpkg install --debug python-eigen
         set -x
-        ls install/x64-linux/lib || true
-        ls install/x64-linux/lib/python* || true
-        ls install/x64-linux/lib/python*/site-packages || true
+        ls installed/x64-linux/lib || true
+        ls installed/x64-linux/lib/python* || true
+        ls installed/x64-linux/lib/python*/site-packages || true
         cat installed/vcpkg/info/python-eigen*.list
+        cat buildtrees/python-eigen/config-x64-linux-rel-out.log || true
+        cat buildtrees/python-eigen/config-x64-linux-rel-err.log || true
+        cat buildtrees/python-eigen/install-x64-linux-rel-out.log || true
+        cat buildtrees/python-eigen/install-x64-linux-rel-err.log || true
     - name: Install SpaceVecAlg
       shell: bash
       run: |
