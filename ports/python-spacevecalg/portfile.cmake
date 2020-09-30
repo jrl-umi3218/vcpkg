@@ -37,6 +37,6 @@ file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/py
 include(vcpkg_remove_pycache)
 vcpkg_remove_pycache(sva)
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")
 
 set(VCPKG_POLICY_EMPTY_INCLUDE_FOLDER enabled)
