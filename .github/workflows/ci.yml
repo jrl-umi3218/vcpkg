@@ -42,85 +42,85 @@ jobs:
       shell: bash
       run: >
         ${JRL_MONO} `./vcpkg fetch nuget | tail -n 1` sources add -source "https://nuget.pkg.github.com/jrl-umi3218/index.json" -storepasswordincleartext -name "GitHub" -username "jrl-umi3218" -password "${{ secrets.GITHUB_TOKEN }}"
-    - name: Install python-eigen
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::python-eigen"
-        ./vcpkg install --debug python-eigen
-        set -x
-        ls installed/x64-linux/lib || true
-        ls installed/x64-linux/lib/python* || true
-        ls installed/x64-linux/lib/python*/site-packages || true
-        cat installed/vcpkg/info/python-eigen*.list
-        cat buildtrees/python-eigen/config-x64-linux-rel-out.log || true
-        cat buildtrees/python-eigen/config-x64-linux-rel-err.log || true
-        cat buildtrees/python-eigen/install-x64-linux-rel-out.log || true
-        cat buildtrees/python-eigen/install-x64-linux-rel-err.log || true
-    - name: Install SpaceVecAlg
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::spacevecalg"
-        ./vcpkg install --debug spacevecalg
-        echo "::set-env name=JRL_PORT::python-spacevecalg"
-        ./vcpkg install --debug python-spacevecalg
-    - name: Install RBDyn
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::rbdyn"
-        ./vcpkg install --debug rbdyn
-        echo "::set-env name=JRL_PORT::python-rbdyn"
-        ./vcpkg install --debug python-rbdyn
-    - name: Install eigen-qld
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::eigen-qld"
-        ./vcpkg install --debug eigen-qld
-        echo "::set-env name=JRL_PORT::python-eigen-qld"
-        ./vcpkg install --debug python-eigen-qld
-    - name: Install sch-core
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::sch-core"
-        ./vcpkg install --debug sch-core
-        echo "::set-env name=JRL_PORT::python-sch-core"
-        ./vcpkg install --debug python-sch-core
-    - name: Install tasks
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::tasks"
-        ./vcpkg install --debug tasks
-        echo "::set-env name=JRL_PORT::python-tasks"
-        ./vcpkg install --debug python-tasks
-    - name: Install hpp-spline
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::hpp-spline"
-        ./vcpkg install --debug hpp-spline
-    - name: Install eigen-quadprog
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::eigen-quadprog"
-        ./vcpkg install --debug eigen-quadprog
-    - name: Install mc-rtc-data
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::mc-rtc-data"
-        ./vcpkg install --debug mc-rtc-data
-    - name: Install mc-rbdyn-urdf
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::mc-rbdyn-urdf"
-        ./vcpkg install --debug mc-rbdyn-urdf
-    - name: Install boost-test
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::boost-test"
-        ./vcpkg install --debug boost-test
-    - name: Install libfranka
-      shell: bash
-      run: |
-        echo "::set-env name=JRL_PORT::libfranka"
-        ./vcpkg install --debug libfranka
+#    - name: Install python-eigen
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::python-eigen"
+#        ./vcpkg install --debug python-eigen
+#        set -x
+#        ls installed/x64-linux/lib || true
+#        ls installed/x64-linux/lib/python* || true
+#        ls installed/x64-linux/lib/python*/site-packages || true
+#        cat installed/vcpkg/info/python-eigen*.list
+#        cat buildtrees/python-eigen/config-x64-linux-rel-out.log || true
+#        cat buildtrees/python-eigen/config-x64-linux-rel-err.log || true
+#        cat buildtrees/python-eigen/install-x64-linux-rel-out.log || true
+#        cat buildtrees/python-eigen/install-x64-linux-rel-err.log || true
+#    - name: Install SpaceVecAlg
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::spacevecalg"
+#        ./vcpkg install --debug spacevecalg
+#        echo "::set-env name=JRL_PORT::python-spacevecalg"
+#        ./vcpkg install --debug python-spacevecalg
+#    - name: Install RBDyn
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::rbdyn"
+#        ./vcpkg install --debug rbdyn
+#        echo "::set-env name=JRL_PORT::python-rbdyn"
+#        ./vcpkg install --debug python-rbdyn
+#    - name: Install eigen-qld
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::eigen-qld"
+#        ./vcpkg install --debug eigen-qld
+#        echo "::set-env name=JRL_PORT::python-eigen-qld"
+#        ./vcpkg install --debug python-eigen-qld
+#    - name: Install sch-core
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::sch-core"
+#        ./vcpkg install --debug sch-core
+#        echo "::set-env name=JRL_PORT::python-sch-core"
+#        ./vcpkg install --debug python-sch-core
+#    - name: Install tasks
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::tasks"
+#        ./vcpkg install --debug tasks
+#        echo "::set-env name=JRL_PORT::python-tasks"
+#        ./vcpkg install --debug python-tasks
+#    - name: Install hpp-spline
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::hpp-spline"
+#        ./vcpkg install --debug hpp-spline
+#    - name: Install eigen-quadprog
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::eigen-quadprog"
+#        ./vcpkg install --debug eigen-quadprog
+#    - name: Install mc-rtc-data
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::mc-rtc-data"
+#        ./vcpkg install --debug mc-rtc-data
+#    - name: Install mc-rbdyn-urdf
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::mc-rbdyn-urdf"
+#        ./vcpkg install --debug mc-rbdyn-urdf
+#    - name: Install boost-test
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::boost-test"
+#        ./vcpkg install --debug boost-test
+#    - name: Install libfranka
+#      shell: bash
+#      run: |
+#        echo "::set-env name=JRL_PORT::libfranka"
+#        ./vcpkg install --debug libfranka
     - name: Install mc-rtc
       shell: bash
       run: |
