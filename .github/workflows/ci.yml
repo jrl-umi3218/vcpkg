@@ -24,20 +24,20 @@ jobs:
       if: startsWith(runner.os, 'Windows')
       run: |
         .\bootstrap-vcpkg.bat
-        echo "::set-env name=VCPKG_DEFAULT_TRIPLET::x64-windows"
+        echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $GITHUB_ENV
     - name: Bootstrap vcpkg (Linux)
       if: startsWith(runner.os, 'Linux')
       run: |
         export CXX=g++ # Enforce default g++ selection
         sudo apt-get install -y python3-setuptools
         ./bootstrap-vcpkg.sh
-        echo "::set-env name=JRL_MONO::mono"
+        echo "JRL_MONO=mono" >> $GITHUB_ENV
     - name: Bootstrap vcpkg (macOS)
       if: startsWith(runner.os, 'macOS')
       run: |
         brew cask install gfortran
         ./bootstrap-vcpkg.sh -allowAppleClang
-        echo "::set-env name=JRL_MONO::mono"
+        echo "JRL_MONO=mono" >> $GITHUB_ENV
     - name: Setup NuGet Credentials
       shell: bash
       run: >
@@ -45,7 +45,7 @@ jobs:
 #    - name: Install python-eigen
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::python-eigen"
+#        echo "JRL_PORT=python-eigen" >> $GITHUB_ENV
 #        ./vcpkg install --debug python-eigen
 #        set -x
 #        ls installed/x64-linux/lib || true
@@ -59,72 +59,72 @@ jobs:
 #    - name: Install SpaceVecAlg
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::spacevecalg"
+#        echo "JRL_PORT=spacevecalg" >> $GITHUB_ENV
 #        ./vcpkg install --debug spacevecalg
-#        echo "::set-env name=JRL_PORT::python-spacevecalg"
+#        echo "JRL_PORT=python-spacevecalg" >> $GITHUB_ENV
 #        ./vcpkg install --debug python-spacevecalg
 #    - name: Install RBDyn
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::rbdyn"
+#        echo "JRL_PORT=rbdyn" >> $GITHUB_ENV
 #        ./vcpkg install --debug rbdyn
-#        echo "::set-env name=JRL_PORT::python-rbdyn"
+#        echo "JRL_PORT=python-rbdyn" >> $GITHUB_ENV
 #        ./vcpkg install --debug python-rbdyn
 #    - name: Install eigen-qld
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::eigen-qld"
+#        echo "JRL_PORT=eigen-qld" >> $GITHUB_ENV
 #        ./vcpkg install --debug eigen-qld
-#        echo "::set-env name=JRL_PORT::python-eigen-qld"
+#        echo "JRL_PORT=python-eigen-qld" >> $GITHUB_ENV
 #        ./vcpkg install --debug python-eigen-qld
 #    - name: Install sch-core
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::sch-core"
+#        echo "JRL_PORT=sch-core" >> $GITHUB_ENV
 #        ./vcpkg install --debug sch-core
-#        echo "::set-env name=JRL_PORT::python-sch-core"
+#        echo "JRL_PORT=python-sch-core" >> $GITHUB_ENV
 #        ./vcpkg install --debug python-sch-core
 #    - name: Install tasks
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::tasks"
+#        echo "JRL_PORT=tasks" >> $GITHUB_ENV
 #        ./vcpkg install --debug tasks
-#        echo "::set-env name=JRL_PORT::python-tasks"
+#        echo "JRL_PORT=python-tasks" >> $GITHUB_ENV
 #        ./vcpkg install --debug python-tasks
 #    - name: Install hpp-spline
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::hpp-spline"
+#        echo "JRL_PORT=hpp-spline" >> $GITHUB_ENV
 #        ./vcpkg install --debug hpp-spline
 #    - name: Install eigen-quadprog
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::eigen-quadprog"
+#        echo "JRL_PORT=eigen-quadprog" >> $GITHUB_ENV
 #        ./vcpkg install --debug eigen-quadprog
 #    - name: Install mc-rtc-data
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::mc-rtc-data"
+#        echo "JRL_PORT=mc-rtc-data" >> $GITHUB_ENV
 #        ./vcpkg install --debug mc-rtc-data
 #    - name: Install mc-rbdyn-urdf
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::mc-rbdyn-urdf"
+#        echo "JRL_PORT=mc-rbdyn-urdf" >> $GITHUB_ENV
 #        ./vcpkg install --debug mc-rbdyn-urdf
 #    - name: Install boost-test
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::boost-test"
+#        echo "JRL_PORT=boost-test" >> $GITHUB_ENV
 #        ./vcpkg install --debug boost-test
 #    - name: Install libfranka
 #      shell: bash
 #      run: |
-#        echo "::set-env name=JRL_PORT::libfranka"
+#        echo "JRL_PORT=libfranka" >> $GITHUB_ENV
 #        ./vcpkg install --debug libfranka
     - name: Install mc-rtc
       shell: bash
       run: |
-        echo "::set-env name=JRL_PORT::mc-rtc"
+        echo "JRL_PORT=mc-rtc" >> $GITHUB_ENV
         ./vcpkg install --debug mc-rtc
     - name: Show logs
       if: failure()
